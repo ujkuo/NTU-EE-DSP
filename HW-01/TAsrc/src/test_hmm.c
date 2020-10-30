@@ -1,4 +1,4 @@
-#include "hmm.h"
+#include "../inc/hmm.h"
 #include <math.h>
 
 int main()
@@ -9,7 +9,7 @@ int main()
 	dump_models( hmms, 5);
 */
 	HMM hmm_initial;
-	loadHMM( &hmm_initial, "../model_init.txt" );
+	loadHMM( &hmm_initial, "model_init.txt" );
 	dumpHMM( stderr, &hmm_initial );
 
 	printf("log(0.5) = %f\n", log(1.5) );

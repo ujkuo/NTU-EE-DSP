@@ -10,7 +10,7 @@ all: $(TARGET)
 train: src/train.c
 	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS) -Iinc
 
-test: src/test.c
+test: src/test_hmm.c
 	$(CC) -o $@ $^ $(CFLAGS) $(LDFLAGS) -Iinc
 
 clean:
