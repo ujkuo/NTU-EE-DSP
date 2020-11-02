@@ -36,15 +36,15 @@ void train(int iteration)
         double observation_new[observation_num][state_num] = {0.0}; // 6*6
         double gamma_new[state_num][seq_num] = {0.0}; // 6*50
         double epsilon_new[state_num][state_num] = {0.0}; // 6*6
-        cout << data.size();
+        // cout << data.size();
 
         for(int j = 0; j < data.size(); j++)
         {
-            cout << j << " ";
-            double alpha[state_num][seq_num] = {0.0};
-            double betta[state_num][seq_num] = {0.0};
-            double gamma[state_num][seq_num] = {0.0};
-            double epsilon[seq_num - 1][state_num][state_num] = {0.0};
+            // cout << j << " ";
+            double alpha[state_num][seq_num] = {0.0}; // 6*50
+            double betta[state_num][seq_num] = {0.0}; // 6*50
+            double gamma[state_num][seq_num] = {0.0}; // 6*50
+            double epsilon[seq_num - 1][state_num][state_num] = {0.0}; // 49*6*6
 
             /* calculate alpha */
             for(int k = 0; k < state_num; k++)
@@ -103,7 +103,7 @@ void train(int iteration)
             {
                 for(int m = 0; m < seq_num; m++)
                 {
-                    gamma_new[k][m] += gamma[k][m];
+                    gamma_new[k][m] += gamma[k][m]; // kill bugs
                     // cout << gamma_new[k][m] << " ";
                 }
                 // cout << endl;
@@ -122,7 +122,7 @@ void train(int iteration)
         double temp[state_num] = {0.0};
         for(int j = 0; j < state_num; j++)
             for(int k = 0; k < seq_num-1; k++)
-                temp[j] += gamma_new[k][j];
+                temp[j] += gamma_new[j][k];
         for(int j = 0; j < state_num; j++)
             for(int k = 0; k < state_num; k++)
                 model.transition[j][k] = epsilon_new[j][k] / temp[j];
