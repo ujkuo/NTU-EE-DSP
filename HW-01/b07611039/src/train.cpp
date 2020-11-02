@@ -15,7 +15,7 @@
 using namespace std;
 
 HMM model;
-vector< vector<int> > data;
+vector< vector<int> > data; // 10000*50
 const int state_num = 6;
 const int observation_num = 6;
 const int seq_num = 50;
@@ -28,32 +28,40 @@ const int seq_num = 50;
  */
 
 
-void training_hmm(int iteration)
+void train(int iteration)
 {
     for(int i = 0; i < iteration; i++)
     {
-        double observation_new[observation_num][state_num] = {0.0};
-        double gamma_new[state_num][seq_num] = {0.0};
-        double epsilon_new[state_num][state_num] = {0.0};
+        // cout << "iteration: " << i << endl;
+        double observation_new[observation_num][state_num] = {0.0}; // 6*6
+        double gamma_new[state_num][seq_num] = {0.0}; // 6*50
+        double epsilon_new[state_num][state_num] = {0.0}; // 6*6
+        cout << data.size();
 
         for(int j = 0; j < data.size(); j++)
         {
+            cout << j << " ";
             double alpha[state_num][seq_num] = {0.0};
             double betta[state_num][seq_num] = {0.0};
             double gamma[state_num][seq_num] = {0.0};
-            double epsilon[seq_num - 1][state_num][state_num];
+            double epsilon[seq_num - 1][state_num][state_num] = {0.0};
 
             /* calculate alpha */
             for(int k = 0; k < state_num; k++)
+            {
                 alpha[k][0] = model.initial[k] * model.observation[data[j][0]][k];
+                // cout << alpha[k][0];
+            }
 
             for(int k = 1; k < seq_num; k++)
+            {
                 for(int m = 0; m < state_num; m++)
                 {
                     for(int n = 0; n < state_num; n++)
                         alpha[m][k] += alpha[n][k-1] * model.transition[n][m];
                     alpha[m][k] *= model.observation[data[j][k]][m];
                 }
+            }
 
             /* calculate betta */
             for(int k = 0; k < state_num; k++)
@@ -92,8 +100,14 @@ void training_hmm(int iteration)
                     observation_new[data[j][k]][i] += gamma[m][k];
 
             for(int k = 0; k < state_num; k++)
+            {
                 for(int m = 0; m < seq_num; m++)
+                {
                     gamma_new[k][m] += gamma[k][m];
+                    // cout << gamma_new[k][m] << " ";
+                }
+                // cout << endl;
+            }
 
             for(int k = 0; k < seq_num; k++)
                 for(int m = 0; m < state_num; m++)
@@ -117,18 +131,12 @@ void training_hmm(int iteration)
             temp[i] += gamma_new[j][seq_num - 1];
         for(int j = 0; j < state_num; j++)
             for(int k = 0; k < observation_num; k++)
+            {
                 model.observation[k][j] = observation_new[k][i] / temp[j];
+                // cout << model.observation[k][j];
+            }
     }
-
-}
-
-
-
-void printer()
-{
-    for(int i = 0; i < 2; i++)
-        for(int j = 0; j < 2; j++)
-            int a = i + j;
+    cout << endl << "train finished.";
 }
 
 
@@ -138,7 +146,7 @@ int main(int argc, char *argv[])
 {
     /* input argument command line */
     int iteration = strtol(argv[1], NULL, 10);
-    cout << iteration;
+    // cout << iteration;
     char *model_init = argv[2];
     char *seq_model = argv[3];
     char *model_name = argv[4];
@@ -150,14 +158,16 @@ int main(int argc, char *argv[])
     string str;
     while(input_file >> str)
     {
-        // cout << str;
+        cout << str << endl;
         vector<int> temp;
         for (int i = 0; i < str.length(); i++)
             temp.push_back(str[i] - 'A');
         data.push_back(temp);
     }
 
-    FILE *saved_path = open_or_die( argv[4], "w"  );
+    cout << data.size();
+    train(iteration);
+    FILE *saved_path = open_or_die(model_name, "w"  );
     dumpHMM(saved_path, &model);
     
     return 0;
