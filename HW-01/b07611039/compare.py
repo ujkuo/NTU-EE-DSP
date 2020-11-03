@@ -8,7 +8,7 @@
 
 import sys
 FILE1 = 'data/test_lbl.txt'
-FILE2 = 'result.txt'
+FILE2 = 'result2.txt'
 pred = []
 gt = []
 with open(FILE1) as f:
