@@ -4,3 +4,5 @@ train
 test
 .dSYM
 *.dSYM
+.swp
+*.swp
