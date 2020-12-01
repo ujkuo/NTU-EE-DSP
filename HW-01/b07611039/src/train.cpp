@@ -25,7 +25,7 @@ void train(int iteration)
 {
     for(int i = 0; i < iteration; i++)
     {
-        // cout << "iteration: " << i << endl;
+        cout << "iteration: " << i << endl;
         // cout << data.size();
         double PI[STATE_NUM] = {0.0};
         double GAMMA[STATE_NUM][OBSERVATION_NUM] = {0.0};
